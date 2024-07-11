@@ -1,28 +1,32 @@
 import { useState } from "react";
+
 import { DateRange, DayPicker } from "react-day-picker";
+import { ptBR } from "date-fns/locale/pt-BR";
+import { format } from "date-fns";
 
 import { Button } from "../../../../components/button";
 
 import { ArrowRight, Calendar, MapPin, Settings2, X } from "lucide-react";
 
 import "react-day-picker/dist/style.css";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale/pt-BR";
 interface DestinationAndDateStepProps {
   isGuestsInputOpen: boolean;
-  openGuestsInput: () => void;
+  eventStartAndEndDates: DateRange | undefined;
   closeGuestsInput: () => void;
+  openGuestsInput: () => void;
+  setDestination: (destination: string) => void;
+  setEventStartAndEndDates: (dates: DateRange | undefined) => void;
 }
 
 export const DestinationAndDateStep = ({
+  closeGuestsInput,
   isGuestsInputOpen,
   openGuestsInput,
-  closeGuestsInput,
+  setDestination,
+  setEventStartAndEndDates,
+  eventStartAndEndDates,
 }: DestinationAndDateStepProps) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  const [eventStartAndEndDates, setEventStartAndEndDates] = useState<
-    DateRange | undefined
-  >();
 
   function openDatePicker() {
     return setIsDatePickerOpen(true);
@@ -49,7 +53,8 @@ export const DestinationAndDateStep = ({
           disabled={isGuestsInputOpen}
           type="text"
           placeholder="Para onde você vai?"
-          className="placeholder:zinc-400 bg-transparent text-lg outline-none"
+          className="placeholder:zinc-400 flex-1 bg-transparent text-lg outline-none"
+          onChange={(event) => setDestination(event.target.value)}
         />
       </div>
       <button
@@ -82,9 +87,9 @@ export const DestinationAndDateStep = ({
               <DayPicker
                 mode="range"
                 locale={ptBR}
-                onSelect={setEventStartAndEndDates}
-                selected={eventStartAndEndDates}
                 className="selected:bg-lime-300"
+                selected={eventStartAndEndDates}
+                onSelect={setEventStartAndEndDates}
               />
             </div>
           </div>

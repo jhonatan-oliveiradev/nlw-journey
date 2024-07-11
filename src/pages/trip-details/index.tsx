@@ -1,13 +1,13 @@
 import { useState } from "react";
 
+import { DestinationAndDateHeader } from "./components/destination-and-date-header";
 import { CreateActivityModal } from "./components/create-activity-modal";
 import { ImportantLinks } from "./components/important-links";
+import { Activities } from "./components/activities";
+import { Button } from "../../components/button";
 import { Guests } from "./components/guests";
 
 import { Plus } from "lucide-react";
-import { Activities } from "./components/activities";
-import { DestinationAndDateHeader } from "./components/destination-and-date-header";
-import { Button } from "../../components/button";
 
 export function TripDetailsPage() {
   const [isCreateActiveModalOpen, setIsCreateActiveModalOpen] = useState(false);
