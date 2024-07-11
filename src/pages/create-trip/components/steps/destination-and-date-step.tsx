@@ -1,6 +1,13 @@
-import { ArrowRight, Calendar, MapPin, Settings2 } from "lucide-react";
+import { useState } from "react";
+import { DateRange, DayPicker } from "react-day-picker";
+
 import { Button } from "../../../../components/button";
 
+import { ArrowRight, Calendar, MapPin, Settings2, X } from "lucide-react";
+
+import "react-day-picker/dist/style.css";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale/pt-BR";
 interface DestinationAndDateStepProps {
   isGuestsInputOpen: boolean;
   openGuestsInput: () => void;
@@ -12,6 +19,28 @@ export const DestinationAndDateStep = ({
   openGuestsInput,
   closeGuestsInput,
 }: DestinationAndDateStepProps) => {
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [eventStartAndEndDates, setEventStartAndEndDates] = useState<
+    DateRange | undefined
+  >();
+
+  function openDatePicker() {
+    return setIsDatePickerOpen(true);
+  }
+
+  function closeDatePicker() {
+    return setIsDatePickerOpen(false);
+  }
+
+  const displayedDate =
+    eventStartAndEndDates &&
+    eventStartAndEndDates.from &&
+    eventStartAndEndDates.to
+      ? format(eventStartAndEndDates.from, "d' de ' LLL")
+          .concat(" até ")
+          .concat(format(eventStartAndEndDates.to, "d' de ' LLL"))
+      : null;
+
   return (
     <div className="flex h-16 items-center gap-3 rounded-xl bg-zinc-900 px-4 shadow-shape">
       <div className="flex flex-1 items-center gap-2">
@@ -23,15 +52,44 @@ export const DestinationAndDateStep = ({
           className="placeholder:zinc-400 bg-transparent text-lg outline-none"
         />
       </div>
-      <div className="flex w-40 items-center gap-2">
+      <button
+        onClick={openDatePicker}
+        disabled={isGuestsInputOpen}
+        className="flex w-60 items-center gap-2 text-left"
+      >
         <Calendar className="size-5 text-zinc-400" />
-        <input
-          disabled={isGuestsInputOpen}
-          type="text"
-          placeholder="Quando?"
-          className="placeholder:zinc-400 w-auto bg-transparent text-lg outline-none"
-        />
-      </div>
+        <span className="w-auto text-lg text-zinc-400">
+          {displayedDate || "Quando?"}
+        </span>
+      </button>
+
+      {isDatePickerOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60">
+          <div className="space-y-5 rounded-xl bg-zinc-900 px-6 py-5 shadow-shape">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-zinc-400">
+                  Selecione a data
+                </h2>
+                <Button variant="ghost" size="icon">
+                  <X
+                    className="size-4 text-zinc-400"
+                    onClick={closeDatePicker}
+                  />
+                </Button>
+              </div>
+              <div className="h-px w-full bg-zinc-800"></div>
+              <DayPicker
+                mode="range"
+                locale={ptBR}
+                onSelect={setEventStartAndEndDates}
+                selected={eventStartAndEndDates}
+                className="selected:bg-lime-300"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="h-6 w-px bg-zinc-800"></div>
 
